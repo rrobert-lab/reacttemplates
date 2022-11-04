@@ -13,6 +13,7 @@ export default function App() {
     function Switch(){
         
         setNew(value=>(value==true)?false:true)
+        
         console.log(old)
     }
    
