@@ -36,7 +36,8 @@ export default function App() {
         event.preventDefault()
          console.log(formData)
          if(formData.password!=formData.Cpassword){
-         console.log("password do not match")}
+         console.log("password do not match")
+        return}
          if(formData.newsletter=true){
              console.log("thank you for signing up")
          }
