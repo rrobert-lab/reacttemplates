@@ -1,31 +1,89 @@
 import React from "react"
+//import memesData from "../memesData.js"
 
-export default function App() {
-    const [starWarsData, setStarWarsData] = React.useState({})
-    const [count, setCount] = React.useState(1)
-    
+export default function Meme() {
     /**
-     * Challenge: Combine `count` with the request URL
-     * so pressing the "Get Next Character" button will
-     * get a new character from the Star Wars API.
-     * Remember: don't forget to consider the dependencies
-     * array!
+     * Challenge: 
+     * As soon as the Meme component loads the first time,
+     * make an API call to "https://api.imgflip.com/get_memes".
+     * 
+     * When the data comes in, save just the memes array part
+     * of that data to the `allMemes` state
+     * 
+     * Think about if there are any dependencies that, if they
+     * changed, you'd want to cause to re-run this function.
+     * 
+     * Hint: for now, don't try to use an async/await function.
+     * Instead, use `.then()` blocks to resolve the promises
+     * from using `fetch`. We'll learn why after this challenge.
      */
     
-    React.useEffect(function() {
-        console.log("Effect ran")
-        fetch("https://swapi.dev/api/people/1")
-            .then(res => res.json())
-            .then(data => setStarWarsData(data))
-    }, [])
+ 
+   
+    React.useEffect(()=>{
+        
+        fetch("https://api.imgflip.com/get_memes")
+        .then(console.log("this is working"))
+        .then(res=>res.json())
+        .then(data=>setAllMemes(data))
+        
+        },[])
+     const [allMemes, setAllMemes] = React.useState("")
+const [meme, setMeme] = React.useState({
+        topText: "",
+        bottomText: "",
+        randomImage: "http://i.imgflip.com/1bij.jpg" 
+    })
+    function getMemeImage() {
+        const memesArray = allMemes.data.memes
+        const randomNumber = Math.floor(Math.random() * memesArray.length)
+        const url = memesArray[randomNumber].url
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            randomImage: url
+        }))
+        
+    }
+    
+    function handleChange(event) {
+        const {name, value} = event.target
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            [name]: value
+        }))
+    }
     
     return (
-        <div>
-            <h2>The count is {count}</h2>
-            <button onClick={() => setCount(prevCount => prevCount + 1)}>Get Next Character</button>
-            <pre>{JSON.stringify(starWarsData, null, 2)}</pre>
-        </div>
+        <main>
+            <div className="form">
+                <input 
+                    type="text"
+                    placeholder="Top text"
+                    className="form--input"
+                    name="topText"
+                    value={meme.topText}
+                    onChange={handleChange}
+                />
+                <input 
+                    type="text"
+                    placeholder="Bottom text"
+                    className="form--input"
+                    name="bottomText"
+                    value={meme.bottomText}
+                    onChange={handleChange}
+                />
+                <button 
+                    className="form--button"
+                    onClick={getMemeImage}
+                >
+                    Get a new meme image 🖼
+                </button>
+            </div>
+            <div className="meme">
+                <img src={meme.randomImage} className="meme--image" />
+                <h2 className="meme--text top">{meme.topText}</h2>
+                <h2 className="meme--text bottom">{meme.bottomText}</h2>
+            </div>
+        </main>
     )
 }
-
-
